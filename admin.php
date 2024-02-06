@@ -1,90 +1,67 @@
 <?php
-require 'dbc.php';
-// session_start();
-if(isset($_SESSION['new_user'])){
-    $em=$_SESSION['new_user'];
-    
-    $choose=mysqli_query($connect,"SELECT * FROM user WHERE email='$em'");
-    $row=mysqli_fetch_assoc($choose);
+include 'connection.php';
+session_start();
 
-    
-    $p= $row['passwrd'];
-
-    $take=mysqli_query($connect, "SELECT * FROM superadmin WHERE  email='$em'  AND  passwrd='$p'");
-     
-    if(mysqli_num_rows($take)==0){
-         header('Location:index.php');
-        
-     
-    } 
-       
-}else{
-     header('Location:index.php');
+if(isset($_POST['profilebtn'])){
+    header('location:profile.php');
 }
+
+if(isset($_SESSION['user_id'])){
+    $user_id = $_SESSION['user_id'];
+    $firstname =  $_SESSION['firstName'];
+    $lastname  =  $_SESSION['lastName'];
+    $mobile    =  $_SESSION['phoneNumber'];
+    $email     =  $_SESSION['user_email'];
+    $addres1  =  $_SESSION['addressLine1'];
+    $addres2  =  $_SESSION['addressLine2'];
+    $addres3  =  $_SESSION['addressLine3'];
+}
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 </head>
 <body>
 
+
+
+    <header>
+        <?php 
+        include 'header.php';
+        ?>
+        <div class="down-box"></div>
+    </header>
+
+    <section  class="profileData">
+        <h2 class="heading">Admin <span>Panel</span></h2>
+        <div class="orderdiv">
+            <div class="controlbtn" style="display:flex;justify-content:center;align-items: center;flex-direction: column;">
+                <a href="addProduct.php"><button  class="btn" style="width: 50vw;">Add Item</button></a>
+                <a href="productList.php"><button class="btn" style="width: 50vw;">Show Product List</button></a>
+                <a href="addBrand.php"><button class="btn" style="width: 50vw;" >Add/Delete brand</button></a>
+                <a href="orderList.php"><button class="btn" style="width: 50vw;">Order List</button></a>
+                <a href="#"><button class="btn" style="width: 50vw;">Messages</button></a> 
+            </div>
+        </div>
+    </section>
+
     <?php
-
-    $output="";
-    if(isset($_POST['submit'])){
-        $adminName=$_POST['name'];
-        $phoneNumber=$_POST['pNumber'];
-        $email=$_POST['email'];
-        $password=md5($_POST['pwd']);
-        $confirmPassword=md5($_POST['cpwd']);
-
-        $chkname="SELECT * FROM admi WHERE userName='$adminName';";
-        $chkmail="SELECT * FROM admi WHERE email='$email';";
-
-        $result1=mysqli_query($connect,$chkname);
-        $result2=mysqli_query($connect,$chkmail);
-        
-        $chkresult1=mysqli_num_rows($result1);
-        $chkresult2=mysqli_num_rows($result2);
-        $error=array();
-        if(empty($adminName)){
-            $error['l']="Enter admin name";
-        }else if(empty($phoneNumber)){
-            $error['l']="Enter admin number";
-        }else if(empty($email)){
-            $error['l']="Enter admin email";
-        }else if(empty($password)){
-            $error['l']="Enter password";
-        }else if($password!==$confirmPassword){
-            $error['l']="password don't match";
-        }else if($chkresult1>0){
-            $error['l']="name already exist";
-        }else if($chkresult2>0){
-            $error['l']="email already exist";
-        }
-
-        if(isset($error['l'])){
-            $output .= "<p class='alert'>" . $error['l'] . "</p>";
-        }else{
-            $output .= "";  
-        }
-        if(count($error)<1){
-            $sql1="INSERT INTO admi (userName,email,phoneNumber,passwrd) VALUES('$adminName','$email','$phoneNumber','$password');";
-            $sql2="INSERT INTO user (userName,email,phoneNumber,passwrd) VALUES('$adminName','$email','$phoneNumber','$password');";
-            $result1=mysqli_query($connect,$sql1);
-            $result2=mysqli_query($connect,$sql2);
-            if ($result1 AND $result2) {
-                $output .= "<p class='success'>You have added a new admin</p>";
-                header("Location:index.php?SIGNUP=SUCCESS");
-            } else {
-                $output .= "<p class='alert'>Failed to add a new admin</p>";
-            }
-        }
-    }
-    
+        include_once 'footer.php';
     ?>
+   
+    
 </body>
 </html>

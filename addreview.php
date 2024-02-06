@@ -1,5 +1,5 @@
 <?php
-require 'dbc.php';
+include 'connection.php';
 if(isset($_SESSION['new_user'])){
     $em=$_SESSION['new_user'];  
     $sql=mysqli_query($connect,"SELECT * FROM user WHERE email='$em';");
@@ -30,6 +30,7 @@ if(isset($_SESSION['new_user'])){
         VALUES('$name','$des')") or die('query failed');
             if($insert){
                     header("Location:index.php");
+                    echo $name;
             }
        }
     ?>
